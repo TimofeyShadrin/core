@@ -1,6 +1,7 @@
 package ru.gb.core.homework.two;
 
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -13,28 +14,26 @@ public class App {
     private static final Random random = new Random();
     private static int fieldSizeX; // Размерность игрового поля
     private static int fieldSizeY; // Размерность игрового поля
-    private static LinkedList<int[]> lastHuman;
-    private static LinkedList<int[]> lastAI;
+    private static final LinkedList<int[]> lastHuman = new LinkedList<>();
+    private static final LinkedList<int[]> lastAI = new LinkedList<>();
     private static final  int WIN_COUNT = 4;
 
     public static void main(String[] args) {
-        while (true) {
+        do {
             initialize();
             printField();
             while (true) {
                 humanTurn();
                 printField();
-                if (gameCheck(lastHuman.getLast(), "Вы победили!"))
+                if (gameCheck(Objects.requireNonNull(lastHuman.pollLast()), "Вы победили!"))
                     break;
                 aiTurn();
                 printField();
-                if (gameCheck(lastAI.getLast(), "Компьютер победил!"))
+                if (gameCheck(Objects.requireNonNull(lastAI.pollLast()), "Компьютер победил!"))
                     break;
             }
             System.out.println("Желаете сыграть еще раз? (Y - да)");
-            if (!SCANNER.next().equalsIgnoreCase("Y"))
-                break;
-        }
+        } while (SCANNER.next().equalsIgnoreCase("Y"));
     }
 
     /**
@@ -120,37 +119,14 @@ public class App {
             y = random.nextInt(fieldSizeY);
         }
         while (!isCellEmpty(x, y));
-        field[x][y] = DOT_AI;
+        field[y][x] = DOT_AI;
         lastAI.add(new int[]{y, x});
     }
 
-    /**
-     * Проверка победы
-     * TODO: Переработать метод в домашнем задании
-     */
-    static boolean checkWin(char c) {
-        // Проверка по трем горизонталям
-        if (field[0][0] == c && field[0][1] == c && field[0][2] == c) return true;
-        if (field[1][0] == c && field[1][1] == c && field[1][2] == c) return true;
-        if (field[2][0] == c && field[2][1] == c && field[2][2] == c) return true;
-
-        // Проверка по диагоналям
-        if (field[0][0] == c && field[1][1] == c && field[2][2] == c) return true;
-        if (field[0][2] == c && field[1][1] == c && field[2][0] == c) return true;
-
-        // Проверка по трем вертикалям
-        if (field[0][0] == c && field[1][0] == c && field[2][0] == c) return true;
-        if (field[0][1] == c && field[1][1] == c && field[2][1] == c) return true;
-        if (field[0][2] == c && field[1][2] == c && field[2][2] == c) return true;
-
-        return false;
-    }
-
-    static boolean checkWin(int x, int y, int winCount) {
+    static boolean checkWin(int x, int y) {
         int[] result = new int[8];
         int[][] points = new int[8][2];
-        char start = field[y][x];
-        for (int i = 1; i < winCount; i++) {
+        for (int i = 1; i < App.WIN_COUNT; i++) {
             points[0] = new int[]{y, x + i};
             points[1] = new int[]{y, x - i};
             points[2] = new int[]{y + i, x};
@@ -169,8 +145,8 @@ public class App {
                 }
             }
         }
-        for (int i = 0; i < result.length; i++) {
-            if (result[i] == (winCount - 1)) {
+        for (int j : result) {
+            if (j == (App.WIN_COUNT - 1)) {
                 return true;
             }
         }
@@ -188,23 +164,8 @@ public class App {
         return true;
     }
 
-    /**
-     * Метод проверки состояния игры
-     */
-    static boolean gameCheck(char c, String str) {
-        if (checkWin(c)) {
-            System.out.println(str);
-            return true;
-        }
-        if (checkDraw()) {
-            System.out.println("Ничья!");
-            return true;
-        }
-        return false; // Игра продолжается
-    }
-
     static boolean gameCheck(int[] turn, String str) {
-        if (checkWin(turn[1], turn[0], WIN_COUNT)) {
+        if (checkWin(turn[1], turn[0])) {
             System.out.println(str);
             return true;
         }
