@@ -1,7 +1,6 @@
 package ru.gb.core.homework.two;
 
 import java.util.LinkedList;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -25,11 +24,11 @@ public class App {
             while (true) {
                 humanTurn();
                 printField();
-                if (gameCheck(Objects.requireNonNull(lastHuman.pollLast()), "Вы победили!"))
+                if (gameCheck(lastHuman.getLast(), "Вы победили!"))
                     break;
                 aiTurn();
                 printField();
-                if (gameCheck(Objects.requireNonNull(lastAI.pollLast()), "Компьютер победил!"))
+                if (gameCheck(lastAI.getLast(), "Компьютер победил!"))
                     break;
             }
             System.out.println("Желаете сыграть еще раз? (Y - да)");
@@ -41,7 +40,7 @@ public class App {
      */
     private static void initialize() {
         // Установим размерность игрового поля
-        fieldSizeX = 5; // количество столбцов
+        fieldSizeX = 7; // количество столбцов
         fieldSizeY = 5; // количество строк
 
         field = new char[fieldSizeY][fieldSizeX];
