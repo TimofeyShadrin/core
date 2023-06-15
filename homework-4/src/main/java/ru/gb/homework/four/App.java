@@ -4,8 +4,12 @@ import ru.gb.homework.four.exception.MyArrayDataException;
 import ru.gb.homework.four.exception.MyArraySizeException;
 import ru.gb.homework.four.exception.base.MyException;
 
+import java.util.logging.Logger;
+
 public class App 
 {
+    private final static Logger LOGGER = Logger.getLogger(App.class.getSimpleName());
+
     public static void main( String[] args ) {
 
         String[][] array = {
@@ -17,12 +21,12 @@ public class App
 
         try {
             int result = sumArrayElements(array);
-            System.out.println("Сумма элементов массива: " + result);
+            LOGGER.info("Сумма элементов массива: " + result);
         } catch (MyArraySizeException e) {
-            System.out.println("Неверный размер массива");
+            LOGGER.info("Неверный размер массива");
             e.printStackTrace();
         } catch (MyArrayDataException e) {
-            System.out.println("Неверные данные в ячейке " + e.getRow() + "x" + e.getColumn());
+            LOGGER.info("Неверные данные в ячейке " + e.getRow() + "x" + e.getColumn());
             e.printStackTrace();
         }
     }
