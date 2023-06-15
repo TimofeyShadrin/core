@@ -12,6 +12,6 @@ public class MyArrayDataException extends MyException {
     }
     @Override
     public String getLocalizedMessage() {
-        return s + row + "x" + column;
+        return super.getLocalizedMessage() + row + "x" + column;
     }
 }
