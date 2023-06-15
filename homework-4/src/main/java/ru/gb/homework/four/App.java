@@ -22,12 +22,8 @@ public class App
         try {
             int result = sumArrayElements(array);
             LOGGER.info("Сумма элементов массива: " + result);
-        } catch (MyArraySizeException e) {
-            LOGGER.info("Неверный размер массива");
-            e.printStackTrace();
-        } catch (MyArrayDataException e) {
-            LOGGER.info("Неверные данные в ячейке " + e.getRow() + "x" + e.getColumn());
-            e.printStackTrace();
+        } catch (MyException e) {
+            LOGGER.warning(e.getLocalizedMessage());
         }
     }
 
@@ -36,7 +32,7 @@ public class App
         int sum = 0;
 
         if (array.length != size || array[0].length != size) {
-            throw new MyArraySizeException();
+            throw new MyArraySizeException("Неверный размер массива");
         }
 
         for (int i = 0; i < size; i++) {
@@ -44,7 +40,7 @@ public class App
                 try {
                     sum += Integer.parseInt(array[i][j]);
                 } catch (NumberFormatException e) {
-                    throw new MyArrayDataException(i, j);
+                    throw new MyArrayDataException("Неверные данные в ячейке ", i, j);
                 }
             }
         }
